@@ -5,6 +5,7 @@ the server runs the server.py file and the client only need run the main.py file
 
 I have had a working knowledge of networking principles and terminology, but had only used it in a cybersecurity capacity. I wanted to design and implement this program to
 have hands on experience implementing and using networking tools. Dip my toes in the water, so to speak.
+The program also serves as the beginnings of a data hosting server, capable of receiving files, verifying contents, and (eventually) able to provide information from hosted files or transfer files from server to client.
 
 {Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the software running (you will need to show two pieces of software running and communicating with each other) and a walkthrough of the code.}
 
@@ -14,9 +15,9 @@ have hands on experience implementing and using networking tools. Dip my toes in
 
 This program is using a Client/Server model to facilitate the transfer of files between the devices.
 
-Connection are made using TCP port 5001
+Connections are made using TCP port 5001 on the server side.
 
-The client is sending a file to the server and the server is responding back with a response to indicate whether the transfer was successful.
+The client is sending a string to the server to alert it to the process that is being conducted, sometimes a file is sent to the server or another string to display, and then the server responds with strings when asked for information on transferred files.
 
 # Development Environment
 
