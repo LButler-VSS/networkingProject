@@ -60,7 +60,9 @@ while True:
     print("1. Send File")
     print("2. Check if file has been sent already")
     print("3. Send server a message")
-    operation = input("\nEnter the number of the action you would like to take, or press any other key to exit (Press 6 to exit without shutting down the server): ")
+    print("6. Disconnect from server")
+    print("?. Any other key will shutdown server and exit program")
+    operation = input("\nEnter the number of the action you would like to take: ")
     if operation == "1":
         sendFile(filename, filesize, s)
     elif operation == "2":
