@@ -9,12 +9,6 @@ SERVER_PORT = 5001
 BUFFER_SIZE = 4096
 SEPARATOR = "<SEPARATOR>"
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((SERVER_HOST, SERVER_PORT))
-s.listen(5)
-print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
-client_socket, address = s.accept() 
-print(f"[+] {address} is connected.")
 
 def recvFile(client_socket, filename, filesize):
     # received = client_socket.recv(BUFFER_SIZE).decode()
@@ -36,13 +30,21 @@ def recvFile(client_socket, filename, filesize):
             f.write(bytes_read)
             # update the progress bar
             progress.update(len(bytes_read))
-    client_socket.sendall("Done".encode)
+    print(f"[+] File {filename} transferred successfully from {address}")
 
 def sendMessage(filename, filesize, client_socket):
-    if os.path.getsize(filename) != int(filesize):
-        client_socket.sendall(f"The program encountered an error transferring the file. Please try again.".encode())
+    filename = os.path.basename(filename)
+    try: 
+        if os.path.getsize(filename) != int(filesize):
+            client_socket.sendall(f"[!] The program encountered an error transferring the file. Please try again.".encode())
+        else:
+            client_socket.sendall(f"[+] Transfer of the file {filename} was completed succesfully.".encode())
+    except:
+        client_socket.sendall(f"[!] The program encountered an error trying to find the file. Please try again.".encode())
     else:
-        client_socket.sendall(f"Transfer of the file {filename} was completed succesfully.".encode())
+        client_socket.sendall(f"[!] The program encountered an error transferring the file or the file does not exist. Please try again.".encode())
+    print(f"[+] File {filename} was queried by {address}")
+    
 
 def callRecvFile(client_socket, arg1, arg2):
     t1 = threading.Thread(target=recvFile, args=(client_socket, arg1, arg2))
@@ -54,20 +56,35 @@ def callSendMessage():
     t2.start()
     t2.join()
 
-while True:
-    received = client_socket.recv(BUFFER_SIZE).decode()
-    operation, arg1, arg2 = received.split(SEPARATOR)
-    if operation == "sendingfile":
-        callRecvFile(client_socket, arg1, arg2)
-    elif operation == "checkingfile":
-        sendMessage(arg1, arg2, client_socket)
-    elif operation == "printmessage":
-        print(arg1)
-    else:
-        break
+quit = True
+while quit:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((SERVER_HOST, SERVER_PORT))
+    s.listen(5)
+    print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
+    client_socket, address = s.accept() 
+    print(f"[+] {address} is connected.\n")
+
+    while True:
+        received = client_socket.recv(BUFFER_SIZE).decode()
+        operation, arg1, arg2 = received.split(SEPARATOR)
+        if operation == "sendingfile":
+            callRecvFile(client_socket, arg1, arg2)
+        elif operation == "checkingfile":
+            sendMessage(arg1, arg2, client_socket)
+        elif operation == "printmessage":
+            print(f"[+] Message from {address}: {arg1}")
+        elif operation == "end":
+            print(f"[+] Client {address} is disconnecting.\n")
+            client_socket.close()
+            break
+        else:
+            quit = False
+            break
     
 
 # close the client socket
 client_socket.close()
 # close the server socket
 s.close()
+print("[-] Shutting down server")

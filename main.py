@@ -5,8 +5,8 @@ import threading
 
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-#10.50.108.146
-host = "10.50.108.131"
+host = "10.50.108.146"
+# host = "10.50.108.131"
 
 port = 5001
 
@@ -42,7 +42,7 @@ def recvMessage(filename, filesize, s):
     s.send(f"checkingfile{SEPARATOR}{filename}{SEPARATOR}{filesize}".encode())
 
     msg = s.recv(BUFFER_SIZE)
-    print(msg.decode)
+    print(msg.decode())
 
 
 def callSendFile():
@@ -56,21 +56,25 @@ def callRecvMessage():
     t2.join()
 
 while True:
-    print("What would you like to do?")
+    print("\nWhat would you like to do?")
     print("1. Send File")
-    print("2. Check if file has been sent already\n")
+    print("2. Check if file has been sent already")
     print("3. Send server a message")
-    operation = input("Enter the number of the action you would like to take, or press any other key to exit: ")
+    operation = input("\nEnter the number of the action you would like to take, or press any other key to exit (Press 6 to exit without shutting down the server): ")
     if operation == "1":
         sendFile(filename, filesize, s)
-        s.recv(BUFFER_SIZE)
     elif operation == "2":
         recvMessage(filename, filesize, s)
     elif operation == "3":
         msg = input("\nEnter your message: ")
         s.send(f"printmessage{SEPARATOR}{msg}{SEPARATOR} ".encode())
+    elif operation == "6":
+        s.send(f"end{SEPARATOR}1{SEPARATOR}1".encode())
+        break
     else:
+        s.send(f"continue{SEPARATOR}1{SEPARATOR}1".encode())
         break
 
 # close the socket
 s.close()
+print("[-] Disconnected from server successfully.")
