@@ -5,7 +5,7 @@ import tqdm
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
 
-host = "10.15.54.183"
+host = "10.50.108.131"
 
 port = 5001
 
@@ -34,5 +34,9 @@ with open(filename, "rb") as f:
         s.sendall(bytes_read)
         # update the progress bar
         progress.update(len(bytes_read))
+
+
+print(s.recv(BUFFER_SIZE).decode())
+
 # close the socket
 s.close()
