@@ -13,7 +13,7 @@ port = 5001
 filename = "data.csv"
 filesize = os.path.getsize(filename)
 
-s = socket.socket()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 print(f"[+] Connecting to {host}:{port}")
 s.connect((host, port))
@@ -40,9 +40,7 @@ def sendFile(filename, filesize, s):
 def recvMessage(s):
     msg = s.recv(BUFFER_SIZE)
     print(msg.decode)
-    while msg:
-        print('Received: ' + msg.decode)
-        msg = s.recv(BUFFER_SIZE)
+    
 t1 = threading.Thread(target=sendFile, args=(filename, filesize, s))
 t1.start()
 t1.join()

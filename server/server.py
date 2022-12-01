@@ -9,7 +9,7 @@ SERVER_PORT = 5001
 BUFFER_SIZE = 4096
 SEPARATOR = "<SEPARATOR>"
 
-s = socket.socket()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((SERVER_HOST, SERVER_PORT))
 
@@ -42,18 +42,18 @@ def recvFile(client_socket, list):
             # update the progress bar
             progress.update(len(bytes_read))
 
-def sendMessage(s, list):
+def sendMessage(client_socket, list):
     if os.path.getsize(list[0]) == list[1]:
-        s.send(f"The program encountered an error transferring the file. Please try again.".encode())
+        client_socket.send(f"The program encountered an error transferring the file. Please try again.".encode())
     else:
-        s.send(f"Transfer of file {list[0]} was completed succesfully.".encode())
+        client_socket.send(f"Transfer of file {list[0]} was completed succesfully.".encode())
 
 list = ["", 0]
 t1 = threading.Thread(target=recvFile, args=(client_socket,list))
 t1.start()
 t1.join()
 
-t2 = threading.Thread(target=sendMessage, args=(s,list))
+t2 = threading.Thread(target=sendMessage, args=(client_socket,list))
 t2.start()
 t2.join()
 
