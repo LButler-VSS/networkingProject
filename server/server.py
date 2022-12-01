@@ -42,9 +42,9 @@ with open(filename, "wb") as f:
         progress.update(len(bytes_read))
 
 if status == True:
-    s.send(f"The program encountered an error transferring the file. Please try again.".encode())
+    client_socket.send(f"The program encountered an error transferring the file. Please try again.".encode())
 else:
-    s.send(f"Transfer of file {filename} was completed succesfully.".encode())
+    client_socket.send(f"Transfer of file {filename} was completed succesfully.".encode())
 
 # close the client socket
 client_socket.close()
