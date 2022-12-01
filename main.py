@@ -21,7 +21,7 @@ print("[+] Connected.")
 
 def sendFile(filename, filesize, s):
     # send the filename and filesize
-    s.send(f"{filename}{SEPARATOR}{filesize}".encode())
+    s.send(f"sendingfile{SEPARATOR}{filename}{SEPARATOR}{filesize}".encode())
 
     # progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "rb") as f:
@@ -37,9 +37,13 @@ def sendFile(filename, filesize, s):
             # update the progress bar
             # progress.update(len(bytes_read  ))
 
-def recvMessage(s):
+def recvMessage(filename, filesize, s):
+    s.send(f"checkingfile{SEPARATOR}{filename}{SEPARATOR}{filesize}".encode())
+
     msg = s.recv(BUFFER_SIZE)
     print(msg.decode)
+
+
     
 t1 = threading.Thread(target=sendFile, args=(filename, filesize, s))
 t1.start()
@@ -49,6 +53,17 @@ t2 = threading.Thread(target=recvMessage, args=(s,))
 t2.start()
 t2.join()
 
+while True:
+    print("What would you like to do?")
+    print("1. Send File")
+    print("2. Check if file has been sent already\n")
+    operation = input("Enter the number of the action you would like to take, or press any other key to exit: ")
+    if operation == "1":
+        sendFile(filename, filesize, s)
+    elif operation == "2":
+        recvMessage(filename, filesize, s)
+    else:
+        break
 
 # close the socket
 s.close()
