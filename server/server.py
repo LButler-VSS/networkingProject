@@ -61,6 +61,8 @@ while True:
         callRecvFile(client_socket, arg1, arg2)
     elif operation == "checkingfile":
         sendMessage(arg1, arg2, client_socket)
+    elif operation == "printmessage":
+        print(arg1)
     else:
         break
     

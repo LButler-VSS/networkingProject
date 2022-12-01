@@ -59,12 +59,16 @@ while True:
     print("What would you like to do?")
     print("1. Send File")
     print("2. Check if file has been sent already\n")
+    print("3. Send server a message")
     operation = input("Enter the number of the action you would like to take, or press any other key to exit: ")
     if operation == "1":
         sendFile(filename, filesize, s)
         s.recv(BUFFER_SIZE)
     elif operation == "2":
         recvMessage(filename, filesize, s)
+    elif operation == "3":
+        msg = input("\nEnter your message: ")
+        s.send(f"printmessage{SEPARATOR}{msg}{SEPARATOR} ".encode())
     else:
         break
 
