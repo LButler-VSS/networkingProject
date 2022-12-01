@@ -37,15 +37,20 @@ def sendFile(filename, filesize, s):
             # update the progress bar
             progress.update(len(bytes_read  ))
 
-t = threading.Thread(target=sendFile, args=(filename, filesize, s))
-t.start()
-t.join()
+def recvMessage(s):
+    msg = s.recv(BUFFER_SIZE)
+    print(msg.decode)
+    while msg:
+        print('Received: ' + msg.decode)
+        msg = s.recv(BUFFER_SIZE)
+t1 = threading.Thread(target=sendFile, args=(filename, filesize, s))
+t1.start()
+t1.join()
 
-# msg = s.recv(BUFFER_SIZE)
-# print(msg.decode)
-# while msg:
-#     print('Received: ' + msg.decode)
-#     msg = s.recv(BUFFER_SIZE)
+t2 = threading.Thread(target=recvMessage, args=(s,))
+t2.start()
+t2.join()
+
 
 # close the socket
 s.close()
