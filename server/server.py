@@ -27,7 +27,7 @@ def recvFile(client_socket, list):
     list[0] = filename
     list[1] = filesize
 
-    progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+    # progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "wb") as f:
         
         while True:
@@ -40,7 +40,7 @@ def recvFile(client_socket, list):
             # write to the file the bytes we just received
             f.write(bytes_read)
             # update the progress bar
-            progress.update(len(bytes_read))
+            # progress.update(len(bytes_read))
 
 def sendMessage(client_socket, list):
     if os.path.getsize(list[0]) == list[1]:
