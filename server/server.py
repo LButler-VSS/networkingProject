@@ -19,11 +19,13 @@ print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
 client_socket, address = s.accept() 
 
 print(f"[+] {address} is connected.")
-def recvFile(client_socket):
+def recvFile(client_socket, list):
     received = client_socket.recv(BUFFER_SIZE).decode()
     filename, filesize = received.split(SEPARATOR)
     filename = os.path.basename(filename)
     filesize = int(filesize)
+    list[0] = filename
+    list[1] = filesize
 
     progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "wb") as f:
@@ -40,11 +42,20 @@ def recvFile(client_socket):
             # update the progress bar
             progress.update(len(bytes_read))
 
-t = threading.Thread(target=recvFile, args=(client_socket,))
-# if os.path.getsize(filename) == filesize:
-#     s.send(f"The program encountered an error transferring the file. Please try again.".encode())
-# else:
-#     s.send(f"Transfer of file {filename} was completed succesfully.".encode())
+def sendMessage(s, list):
+    if os.path.getsize(list[0]) == list[1]:
+        s.send(f"The program encountered an error transferring the file. Please try again.".encode())
+    else:
+        s.send(f"Transfer of file {list[0]} was completed succesfully.".encode())
+
+list = ["", 0]
+t1 = threading.Thread(target=recvFile, args=(client_socket,list))
+t1.start()
+t1.join()
+
+t2 = threading.Thread(target=sendMessage, args=(s,list))
+t2.start()
+t2.join()
 
 # close the client socket
 client_socket.close()
