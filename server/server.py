@@ -15,7 +15,6 @@ s.listen(5)
 print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
 client_socket, address = s.accept() 
 print(f"[+] {address} is connected.")
-client_socket.s
 
 def recvFile(client_socket, filename, filesize):
     # received = client_socket.recv(BUFFER_SIZE).decode()
@@ -45,8 +44,8 @@ def sendMessage(filename, filesize, client_socket):
     else:
         client_socket.sendall(f"Transfer of the file {filename} was completed succesfully.".encode())
 
-def callRecvFile():
-    t1 = threading.Thread(target=recvFile, args=(client_socket,))
+def callRecvFile(client_socket, arg1, arg2):
+    t1 = threading.Thread(target=recvFile, args=(client_socket, arg1, arg2))
     t1.start()
     t1.join()
 
@@ -59,7 +58,7 @@ while True:
     received = client_socket.recv(BUFFER_SIZE).decode()
     operation, arg1, arg2 = received.split(SEPARATOR)
     if operation == "sendingfile":
-        recvFile(client_socket, arg1, arg2)
+        callRecvFile(client_socket, arg1, arg2)
     elif operation == "checkingfile":
         sendMessage(arg1, arg2, client_socket)
     else:
