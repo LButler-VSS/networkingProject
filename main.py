@@ -23,19 +23,20 @@ def sendFile(filename, filesize, s):
     # send the filename and filesize
     s.send(f"sendingfile{SEPARATOR}{filename}{SEPARATOR}{filesize}".encode())
 
-    # progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+    progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "rb") as f:
         while True:
             # read the bytes from the file
             bytes_read = f.read(BUFFER_SIZE)
             if not bytes_read:
                 # file transmitting is done
+                s.sendall(bytes_read)
                 break
             # we use sendall to assure transimission in 
             # busy networks
             s.sendall(bytes_read)
             # update the progress bar
-            # progress.update(len(bytes_read  ))
+            progress.update(len(bytes_read  ))
 
 def recvMessage(filename, filesize, s):
     s.send(f"checkingfile{SEPARATOR}{filename}{SEPARATOR}{filesize}".encode())
@@ -44,14 +45,15 @@ def recvMessage(filename, filesize, s):
     print(msg.decode)
 
 
-    
-t1 = threading.Thread(target=sendFile, args=(filename, filesize, s))
-t1.start()
-t1.join()
+def callSendFile():
+    t1 = threading.Thread(target=sendFile, args=(filename, filesize, s))
+    t1.start()
+    t1.join()
 
-t2 = threading.Thread(target=recvMessage, args=(s,))
-t2.start()
-t2.join()
+def callRecvMessage():
+    t2 = threading.Thread(target=recvMessage, args=(s,))
+    t2.start()
+    t2.join()
 
 while True:
     print("What would you like to do?")
@@ -60,6 +62,7 @@ while True:
     operation = input("Enter the number of the action you would like to take, or press any other key to exit: ")
     if operation == "1":
         sendFile(filename, filesize, s)
+        s.recv(BUFFER_SIZE)
     elif operation == "2":
         recvMessage(filename, filesize, s)
     else:

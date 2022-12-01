@@ -15,6 +15,7 @@ s.listen(5)
 print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
 client_socket, address = s.accept() 
 print(f"[+] {address} is connected.")
+client_socket.s
 
 def recvFile(client_socket, filename, filesize):
     # received = client_socket.recv(BUFFER_SIZE).decode()
@@ -36,6 +37,7 @@ def recvFile(client_socket, filename, filesize):
             f.write(bytes_read)
             # update the progress bar
             progress.update(len(bytes_read))
+    client_socket.sendall("Done".encode)
 
 def sendMessage(filename, filesize, client_socket):
     if os.path.getsize(filename) != int(filesize):
