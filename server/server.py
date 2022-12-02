@@ -46,6 +46,8 @@ def sendMessage(filename, filesize, client_socket):
     print(f"[+] File {filename} was queried by {address}")
     
 
+# These are functions to allow the threading of server operations. More work
+# would need to be done to allow for multiple calls to the server at once.
 def callRecvFile(client_socket, arg1, arg2):
     t1 = threading.Thread(target=recvFile, args=(client_socket, arg1, arg2))
     t1.start()
@@ -56,16 +58,24 @@ def callSendMessage():
     t2.start()
     t2.join()
 
+# Main program loop, Server will remain open until told by client to quit
 quit = True
 while quit:
+    # establish socket and listen for clients
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((SERVER_HOST, SERVER_PORT))
     s.listen(5)
-    print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
-    client_socket, address = s.accept() 
-    print(f"[+] {address} is connected.\n")
+    
 
     while True:
+        # Establish connection with client
+        print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
+        client_socket, address = s.accept() 
+        print(f"[+] {address} is connected.\n")
+
+        # Client first a string with 3 arguements separated by Separator tokens
+        # First arg will determine the operation being performed
+        # The others will provide the arguements to fulfill the task if necessary
         received = client_socket.recv(BUFFER_SIZE).decode()
         operation, arg1, arg2 = received.split(SEPARATOR)
         if operation == "sendingfile":
@@ -74,17 +84,24 @@ while quit:
             sendMessage(arg1, arg2, client_socket)
         elif operation == "printmessage":
             print(f"[+] Message from {address}: {arg1}")
+        # If client just wished to disconnect but leave the server up, 
+        # this command will do so
         elif operation == "end":
             print(f"[+] Client {address} is disconnecting.\n")
             client_socket.close()
             break
+        # Any invalid operation calls will cause the server to shutdown.
+        # May want to make it so any other call causes just the client to disconnect
         else:
             quit = False
             break
+        # Disconnect from client
+        client_socket.close()
+    
     
 
 # close the client socket
 client_socket.close()
 # close the server socket
 s.close()
-print("[-] Shutting down server")
+print("[!] Shutting down server")

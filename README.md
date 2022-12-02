@@ -33,6 +33,6 @@ Language used was Python, utilizing the Socket library to faciliate the connecti
 
 # Future Work
 
-* The most glaring issue is in the file transfer. When the transfer is the only function to the program, it works correctly. Once more is added it fails to function. Implementing that to work correctly without crashing either client or server is priority number one.
+* ~~The most glaring issue is in the file transfer. When the transfer is the only function to the program, it works correctly. Once more is added it fails to function. Implementing that to work correctly without crashing either client or server is priority number one.~~ My logic required the socket to close the connection to finish the file transfer. Rewrote the program to disconnect and reconnect for every action taken.
 * Converting the server into one that utilizes the Python socketserver library would be beneficial to learning that tool and the benefits to using a more defined server class.
 * Improving on the UI and adding more functionality, i.e. messages from server to client, managment of multiple clients through threads, ability to retrieve information from files stored on the server
