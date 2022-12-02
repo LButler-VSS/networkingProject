@@ -7,9 +7,8 @@ I have had a working knowledge of networking principles and terminology, but had
 have hands on experience implementing and using networking tools. Dip my toes in the water, so to speak.
 The program also serves as the beginnings of a data hosting server, capable of receiving files, verifying contents, and (eventually) able to provide information from hosted files or transfer files from server to client.
 
-{Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the software running (you will need to show two pieces of software running and communicating with each other) and a walkthrough of the code.}
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/6z-0JliTKCM)
 
 # Network Communication
 
