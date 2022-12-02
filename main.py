@@ -6,7 +6,7 @@ import threading
 # Relevant variables. Would likely need to be asked as input from user for modality
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-host = "10.50.109.10"
+host = "localhost"
 port = 5001
 filename = "data.csv"
 filesize = os.path.getsize(filename)
@@ -63,9 +63,10 @@ while True:
     operation = input("\nEnter the number of the action you would like to take: ")
     
     # Connect to server
-    print(f"[+] Connecting to {host}:{port}")
-    s.connect((host, port))
-    print("[+] Connected.")
+    if operation != 6:
+        print(f"[+] Connecting to {host}:{port}")
+        s.connect((host, port))
+        print("[+] Connected.")
 
     # Perform task
     if operation == "1":
@@ -76,14 +77,15 @@ while True:
         msg = input("\nEnter your message: ")
         s.send(f"printmessage{SEPARATOR}{msg}{SEPARATOR} ".encode())
     elif operation == "6":
-        s.send(f"end{SEPARATOR}1{SEPARATOR}1".encode())
         break
     else:
         s.send(f"continue{SEPARATOR}1{SEPARATOR}1".encode())
         break
     # Disconnect from server
-    print("\n[-] Disconnected from server successfully.")
-    s.close()
+
+    if operation != 6:
+        print("\n[-] Disconnected from server successfully.")
+        s.close()
 
 # close the socket
 s.close()

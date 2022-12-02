@@ -86,7 +86,7 @@ while quit:
             print(f"[+] Message from {address}: {arg1}")
         # If client just wished to disconnect but leave the server up, 
         # this command will do so
-        elif operation == "end":
+        elif operation == "continue":
             print(f"[+] Client {address} is disconnecting.\n")
             client_socket.close()
             break
